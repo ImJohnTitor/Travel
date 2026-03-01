@@ -1,0 +1,27 @@
+name: TimeMachine
+
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    - cron: '0 0,12 * * *'
+
+jobs:
+  travel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+          architecture: "x64"
+      - name: run script
+        run: |
+          cd .github/workflows && python main.py
+      - name: git
+        run: |
+          git config user.name "ImJohnTitor"
+          git config user.email "115845162+ImJohnTitor@users.noreply.github.com"
+          git pull
+          GIT_COMMITTER_DATE="$(cat .github/workflows/date)" git commit --amend --date="$(cat .github/workflows/date)" --no-edit
+          git push --force
